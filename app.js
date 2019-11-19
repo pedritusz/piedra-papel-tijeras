@@ -1,110 +1,124 @@
-let computerScore=0;
+let computerScore = 0;
 let userScore = 0;
 let userChoise;
 let computerChoise;
+
 const userScore_Span = document.getElementById("user-score");
 const computerScore_Span = document.getElementById("computer-score");
 const scoreBoard_div = document.querySelector(".score-board");
-const result_div= document.querySelector(".result");
+const result_div = document.querySelector(".result");
 const papel_div = document.getElementById("papel");
 const tijeras_div = document.getElementById("tijeras");
 const piedra_div = document.getElementById("piedra");
 
-function getComputerChoise(){
-    const Choise =['piedra','papel','tijeras'];
+const CHOICES = {
+    papel: 'papel',
+    piedra: 'piedra',
+    tijeras: 'tijeras'
+};
+
+const WAITING_TIME = 1000;
+
+function getComputerChoise() {
+    const Choise = [CHOICES.piedra, CHOICES.papel, CHOICES.tijeras];
     const randomNumber = Math.floor(Math.random() * 3)
     return Choise[randomNumber];
-
 }
-function ChangeClass(status){
-  switch(status){
-   case "win":
-     document.getElementById(userChoise).classList.add('geenWin');
-     setTimeout(() => document.getElementById(userChoise).classList.remove('geenWin'), 1000)
 
-     break;
-   case "lose":
-     document.getElementById(userChoise).classList.add('redLose');
-     setTimeout(() => document.getElementById(userChoise).classList.remove('redLose'), 1000)
 
-     break;
-   case "draw":
-     document.getElementById(userChoise).classList.add('blueDraw');
-     setTimeout(() => document.getElementById(userChoise).classList.remove('blueDraw'), 1000)
-     break;
-  }
+function ChangeClass(status) {
+    const htmlElement = document.getElementById(userChoise);
+
+    switch (status) {
+        case "win":
+            htmlElement.classList.add('geenWin');
+            setTimeout(() => htmlElement.classList.remove('geenWin'), WAITING_TIME);
+
+            break;
+        case "lose":
+            htmlElement.classList.add('redLose');
+            setTimeout(() => htmlElement.classList.remove('redLose'), WAITING_TIME);
+
+            break;
+        case "draw":
+            htmlElement.classList.add('blueDraw');
+            setTimeout(() => htmlElement.classList.remove('blueDraw'), WAITING_TIME);
+            break;
+    }
 }
-function win(){
-    let result = "you win";
-    setResult(result);
+
+
+function win() {
+    setResult("you win");
     userScore++;
-    setScore()
-    ChangeClass("win")
-
-
+    setScore();
+    ChangeClass("win");
 }
-function lose(){
+
+
+function lose() {
     let result = "you lose";
     setResult(result);
     computerScore++;
     setScore()
     ChangeClass("lose")
-
 }
-function draw(){
+
+
+function draw() {
     let result = "draw"
     setResult(result);
     ChangeClass("draw")
-
-
 }
-function setScore(){
+
+
+function setScore() {
     userScore_Span.innerHTML = userScore;
     computerScore_Span.innerHTML = computerScore;
 }
-function setResult(result){
-    result_div.innerHTML =  result;
+
+
+function setResult(result) {
+    result_div.innerHTML = result;
 }
 
 
 //(2.1)funcion con logica de cada jugada
-function gameLogic(userSelection){
-    const ComputerChoise = getComputerChoise();
-    switch(userSelection + ComputerChoise){
-        case "tijeraspapel":
-        case "piedratijeras":
-        case "papelpiedra":
-            win();
-            break;
-        case "papeltijeras":
-        case "piedrapapel":
-        case "tijeraspiedra":
-            lose();
-            break;
-        case "tijerastijeras":
-        case "piedrapiedra":
-        case "papelpapel":
-            draw();
-            break
+function gameLogic(userSelection) {
+    userChoise = userSelection;
+    const computerChoise = getComputerChoise();
+    const result = userSelection + computerChoise;
+
+    if (userSelection === computerChoise) {
+        draw();
+    } else {
+        switch (result) {
+            case CHOICES.tijeras+CHOICES.papel:
+            case "piedratijeras":
+            case "papelpiedra":
+                win();
+                break;
+            case "papeltijeras":
+            case "piedrapapel":
+            case "tijeraspiedra":
+                lose();
+                break;
+        }
     }
-
 }
-// (1.1) encapsulo los lisener en una funcion
-function main (){
-papel_div.addEventListener('click',()=> {
 
-    //(2.2)se utiliza la funcion con logica enviandole jugada de cada evento
-gameLogic(userChoise)
-userChoise="papel"
-})
-piedra_div.addEventListener('click',()=> {
-    userChoise="piedra";
-gameLogic(userChoise)
-})
-tijeras_div.addEventListener('click',()=> {
-    userChoise="tijeras"
-    gameLogic(userChoise)
-})    
+// (1.1) encapsulo los lisener en una funcion
+function main() {
+    papel_div.addEventListener('click', () => {
+        //(2.2)se utiliza la funcion con logica enviandole jugada de cada evento
+        gameLogic(CHOICES.papel);
+    })
+    piedra_div.addEventListener('click', () => {
+        gameLogic(CHOICES.piedra);
+    })
+    tijeras_div.addEventListener('click', () => {
+        gameLogic(CHOICES.tijeras);
+    });
 }
 //(1.2) llamo a la funcion para que los listeners esten disponibles
 main()

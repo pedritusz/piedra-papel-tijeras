@@ -66,7 +66,7 @@ function lose() {
 
 
 function draw() {
-    let result = "draw"
+    let result = "tri"
     setResult(result);
     ChangeClass("draw")
 }
